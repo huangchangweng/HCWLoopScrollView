@@ -13,6 +13,7 @@
 		1FC42B6B1CC8BCA000AC41DF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1FC42B691CC8BCA000AC41DF /* Main.storyboard */; };
 		1FC42B6D1CC8BCA000AC41DF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1FC42B6C1CC8BCA000AC41DF /* Assets.xcassets */; };
 		1FC42B701CC8BCA000AC41DF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1FC42B6E1CC8BCA000AC41DF /* LaunchScreen.storyboard */; };
+		1FC42B7A1CC8BEBF00AC41DF /* HCWLoopScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FC42B791CC8BEBF00AC41DF /* HCWLoopScrollView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,8 @@
 		1FC42B6C1CC8BCA000AC41DF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1FC42B6F1CC8BCA000AC41DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1FC42B711CC8BCA000AC41DF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1FC42B781CC8BEBF00AC41DF /* HCWLoopScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HCWLoopScrollView.h; sourceTree = "<group>"; };
+		1FC42B791CC8BEBF00AC41DF /* HCWLoopScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HCWLoopScrollView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +86,8 @@
 		1FC42B771CC8BE6400AC41DF /* HCWLoopScrollView */ = {
 			isa = PBXGroup;
 			children = (
+				1FC42B781CC8BEBF00AC41DF /* HCWLoopScrollView.h */,
+				1FC42B791CC8BEBF00AC41DF /* HCWLoopScrollView.m */,
 			);
 			path = HCWLoopScrollView;
 			sourceTree = "<group>";
@@ -157,6 +162,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1FC42B7A1CC8BEBF00AC41DF /* HCWLoopScrollView.m in Sources */,
 				1FC42B681CC8BCA000AC41DF /* ViewController.m in Sources */,
 				1FC42B651CC8BCA000AC41DF /* AppDelegate.m in Sources */,
 				1FC42B621CC8BCA000AC41DF /* main.m in Sources */,
