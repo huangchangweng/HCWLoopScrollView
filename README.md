@@ -1,5 +1,6 @@
 # HCWLoopScrollView
 无线滚动轮播控件，多用于广告等功能。
+支持纯代码和storyboard方式。
 
 ![image](https://github.com/huangchangweng/HCWLoopScrollView/blob/master/HCWLoopScrollView.gif) 
 
