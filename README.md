@@ -1,7 +1,7 @@
 # HCWLoopScrollView
 无线滚动轮播控件，多用于广告等功能。
 
-![image](https://github.com/zhengwenming/WMPlayer/blob/master/WMPlayer/Resource/WMPlayer.gif) 
+![image](https://github.com/huangchangweng/HCWLoopScrollView/blob/master/HCWLoopScrollView.gif) 
 
 // 1.代码方式
 
