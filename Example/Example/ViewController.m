@@ -10,6 +10,7 @@
 #import "HCWLoopScrollView/HCWLoopScrollView.h"
 
 @interface ViewController ()
+@property (weak, nonatomic) IBOutlet HCWLoopScrollView *sbLoopScrollView;
 
 @end
 
@@ -28,18 +29,28 @@
                         @"http://pic10.nipic.com/20101026/4690416_135348005709_2.jpg",
                         ];
     
-    HCWLoopScrollView *loopScrollView = [HCWLoopScrollView loopScrollViewWithFrame:CGRectZero imageUrls:images];
+    
+    // 1.code...
+    HCWLoopScrollView *loopScrollView = [HCWLoopScrollView loopScrollViewWithImageUrls:images];
     loopScrollView.translatesAutoresizingMaskIntoConstraints = NO;
     loopScrollView.alignment = HCWPageControlAlignCenter;
     loopScrollView.timeInterval = 2;
-    loopScrollView.placeholder = [UIImage imageNamed:@"ihave_savy_banner_bg"];
+    loopScrollView.placeholder = [UIImage imageNamed:@"you_placeholder"];
     loopScrollView.didSelectItemBlock = ^(NSInteger atIndex, UIImageView *sender) {
         
     };
     [self.view addSubview:loopScrollView];
     
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[loopScrollView]-0-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(loopScrollView)]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[loopScrollView(200)]" options:0 metrics:nil views:NSDictionaryOfVariableBindings(loopScrollView)]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-50-[loopScrollView(200)]" options:0 metrics:nil views:NSDictionaryOfVariableBindings(loopScrollView)]];
+    
+    // 2.storyboard
+    self.sbLoopScrollView.alignment = HCWPageControlAlignLeft;
+    self.sbLoopScrollView.imageUrls = images;
+    self.sbLoopScrollView.timeInterval = 3;
+    self.sbLoopScrollView.didSelectItemBlock = ^(NSInteger atIndex, UIImageView *sender) {
+        
+    };
 }
 
 - (void)didReceiveMemoryWarning {

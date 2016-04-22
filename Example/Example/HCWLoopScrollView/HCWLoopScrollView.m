@@ -68,20 +68,8 @@ NSString * const kCellIdentifier = @"ReuseCellIdentifier";
 
 @implementation HCWLoopScrollView
 
-- (void)pauseTimer {
-    if (self.timer) {
-        [self.timer setFireDate:[NSDate distantFuture]];
-    }
-}
-
-- (void)startTimer {
-    if (self.timer) {
-        [self.timer setFireDate:[NSDate distantPast]];
-    }
-}
-
-+ (instancetype)loopScrollViewWithFrame:(CGRect)frame imageUrls:(NSArray *)imageUrls {
-    HCWLoopScrollView *loopView = [[HCWLoopScrollView alloc] initWithFrame:frame];
++ (instancetype)loopScrollViewWithImageUrls:(NSArray <NSString *> *)imageUrls {
+    HCWLoopScrollView *loopView = [[HCWLoopScrollView alloc] initWithFrame:CGRectZero];
     loopView.imageUrls = imageUrls;
     
     return loopView;
@@ -89,11 +77,61 @@ NSString * const kCellIdentifier = @"ReuseCellIdentifier";
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        self.timeInterval = 5.0;
-        self.alignment = HCWPageControlAlignCenter;
-        [self configCollectionView];
+        [self commonInit];
     }
     return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super initWithCoder:aDecoder]) {
+        [self commonInit];
+    }
+    return self;
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    self.layout.itemSize = self.bounds.size;
+    if (self.collectionView.contentOffset.x == 0) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:self.totalPageCount * 0.5
+                                                     inSection:0];
+        [self.collectionView scrollToItemAtIndexPath:indexPath
+                                    atScrollPosition:UICollectionViewScrollPositionNone
+                                            animated:NO];
+    }
+    
+    [self configPageControl];
+}
+
+- (void)commonInit
+{
+    self.timeInterval = 5.0;
+    self.alignment = HCWPageControlAlignCenter;
+    [self configCollectionView];
+}
+
+- (void)autoScroll {
+    NSInteger curIndex = (self.collectionView.contentOffset.x + self.bounds.size.width * 0.5) / self.bounds.size.width;
+    NSInteger toIndex = curIndex + 1;
+    
+    NSIndexPath *indexPath = nil;
+    if (toIndex == self.totalPageCount) {
+        toIndex = self.totalPageCount * 0.5;
+        
+        // scroll to the middle without animation, and scroll to middle with animation, so that it scrolls
+        // more smoothly.
+        indexPath = [NSIndexPath indexPathForItem:toIndex inSection:0];
+        [self.collectionView scrollToItemAtIndexPath:indexPath
+                                    atScrollPosition:UICollectionViewScrollPositionNone
+                                            animated:NO];
+    } else {
+        indexPath = [NSIndexPath indexPathForItem:toIndex inSection:0];
+    }
+    
+    [self.collectionView scrollToItemAtIndexPath:indexPath
+                                atScrollPosition:UICollectionViewScrollPositionNone
+                                        animated:YES];
 }
 
 - (void)configCollectionView {
@@ -134,28 +172,19 @@ NSString * const kCellIdentifier = @"ReuseCellIdentifier";
     [[NSRunLoop mainRunLoop] addTimer:_timer forMode:NSRunLoopCommonModes];
 }
 
-/*
-- (void)setPageControlEnabled:(BOOL)pageControlEnabled {
-    if (_pageControlEnabled != pageControlEnabled) {
-        _pageControlEnabled = pageControlEnabled;
-        
-        if (_pageControlEnabled) {
-            __weak typeof(self) weakSelf = self;
-            self.pageControl.valueChangedBlock = ^(NSInteger clickedAtIndex) {
-                NSInteger curIndex = (weakSelf.collectionView.contentOffset.x
-                                      + weakSelf.layout.itemSize.width * 0.5) / weakSelf.layout.itemSize.width;
-                NSInteger toIndex = curIndex + (clickedAtIndex > weakSelf.previousPageIndex ? clickedAtIndex : -clickedAtIndex);
-                [weakSelf.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:toIndex inSection:0]
-                                                atScrollPosition:UICollectionViewScrollPositionNone
-                                                        animated:YES];
-                
-            };
-        } else {
-            self.pageControl.valueChangedBlock = nil;
-        }
+- (void)pageValueChange:(UIPageControl *)sender
+{
+    if (_pageControlEnabled) {
+        NSInteger clickedAtIndex = sender.currentPage;
+        NSInteger curIndex = (self.collectionView.contentOffset.x
+                              + self.layout.itemSize.width * 0.5) / self.layout.itemSize.width;
+        NSInteger toIndex = curIndex + (clickedAtIndex > self.previousPageIndex ? clickedAtIndex : -clickedAtIndex);
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:toIndex inSection:0]
+                                        atScrollPosition:UICollectionViewScrollPositionNone
+                                                animated:YES];
     }
 }
- */
+
 
 - (void)configPageControl {
     if (self.pageControl == nil) {
@@ -164,6 +193,7 @@ NSString * const kCellIdentifier = @"ReuseCellIdentifier";
         self.pageControl.hidesForSinglePage = YES;
         [self addSubview:self.pageControl];
         self.pageControlEnabled = YES;
+        [self.pageControl addTarget:self action:@selector(pageValueChange:) forControlEvents:UIControlEventValueChanged];
         
         CGSize size = [self.pageControl sizeForNumberOfPages:self.imageUrls.count];
         
@@ -198,33 +228,12 @@ NSString * const kCellIdentifier = @"ReuseCellIdentifier";
     
 }
 
+#pragma mark - Setter
+
 - (void)setTimeInterval:(NSTimeInterval)timeInterval {
     _timeInterval = timeInterval;
     
     [self configTimer];
-}
-
-- (void)autoScroll {
-    NSInteger curIndex = (self.collectionView.contentOffset.x + self.bounds.size.width * 0.5) / self.bounds.size.width;
-    NSInteger toIndex = curIndex + 1;
-    
-    NSIndexPath *indexPath = nil;
-    if (toIndex == self.totalPageCount) {
-        toIndex = self.totalPageCount * 0.5;
-        
-        // scroll to the middle without animation, and scroll to middle with animation, so that it scrolls
-        // more smoothly.
-        indexPath = [NSIndexPath indexPathForItem:toIndex inSection:0];
-        [self.collectionView scrollToItemAtIndexPath:indexPath
-                                    atScrollPosition:UICollectionViewScrollPositionNone
-                                            animated:NO];
-    } else {
-        indexPath = [NSIndexPath indexPathForItem:toIndex inSection:0];
-    }
-    
-    [self.collectionView scrollToItemAtIndexPath:indexPath
-                                atScrollPosition:UICollectionViewScrollPositionNone
-                                        animated:YES];
 }
 
 - (void)setImageUrls:(NSArray *)imageUrls {
@@ -248,27 +257,26 @@ NSString * const kCellIdentifier = @"ReuseCellIdentifier";
     }
 }
 
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    
-    self.layout.itemSize = self.bounds.size;
-    if (self.collectionView.contentOffset.x == 0) {
-        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:self.totalPageCount * 0.5
-                                                     inSection:0];
-        [self.collectionView scrollToItemAtIndexPath:indexPath
-                                    atScrollPosition:UICollectionViewScrollPositionNone
-                                            animated:NO];
-    }
-    
-    [self configPageControl];
-}
-
 - (void)setAlignment:(HCWPageControlAlignment)alignment {
     if (_alignment != alignment) {
         _alignment = alignment;
         
         [self configPageControl];
         [self.collectionView reloadData];
+    }
+}
+
+#pragma mark - Public Method
+
+- (void)pauseTimer {
+    if (self.timer) {
+        [self.timer setFireDate:[NSDate distantFuture]];
+    }
+}
+
+- (void)startTimer {
+    if (self.timer) {
+        [self.timer setFireDate:[NSDate distantPast]];
     }
 }
 
