@@ -26,3 +26,10 @@
     self.sbLoopScrollView.timeInterval = 3;
     self.sbLoopScrollView.didSelectItemBlock = ^(NSInteger atIndex, UIImageView *sender) {
     };
+
+
+作者：HCW
+
+联系方式：599139419@qq.com
+
+使用中如有疑问或有建议，欢迎打扰！
